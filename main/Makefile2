@@ -1,0 +1,36 @@
+INTEL=/opt/intel
+BOOST_PATH=${HOME}/C++/boost_1_54_0
+MPSTOOLS=${HOME}/workspace/MPSTools
+
+CPP=icpc
+
+FF=ifort                                                                                                                                             
+FFLAGS=-O3 -m64 -fopenmp
+CPPFLAGS=-O3 -m64 -openmp -DNDEBUG -std=c++0x -fPIC -static
+OBJ = ../blas/lapack_routines.o ../blas/blasroutines.o ../blas/helperfunctions.o ../Parser/ParameterParser.o ../misc/File.o ../misc/Utilities.o
+
+INCLUDES=-I${BOOST_PATH}  -I${MPSTOOLS}/sourcefiles/blas -I${MPSTOOLS}/sourcefiles/Parser -I${MPSTOOLS}/sourcefiles/src -I${MPSTOOLS}/sourcefiles/misc
+
+#linker path
+LINKS=-L${INTEL}/mkl/lib/intel64 -L${INTEL}/lib/intel64 -L${BOOST_PATH}/lib -L${MPSTOOLS}/sourcefiles/misc -L${MPSTOOLS}/sourcefiles/Parser -L${MPSTOOLS}/sourcefiles/blas  
+
+
+#dynamic
+LDFLAGS= -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lboost_filesystem -lboost_system -lboost_serialization -lpthread
+#static
+
+#blasroutines.o helperfunctions.o ParameterParser.o File.o Utilities.o lapack_routines.o
+
+libsolver.a: TO_solver_new.o $(OBJ)
+	@echo 'Buidling static library $@'
+	ar r -o $@ $< $(OBJ)
+	@echo 'Finished building $@'
+	@echo ' '
+
+TO_solver_new.o: TO_solver_new.cpp
+	@echo 'Building $@'
+	$(CPP) $(CPPFLAGS) $(INCLUDES) -c $< 
+	@echo 'Finished building $@'
+	@echo ' '
+
+
