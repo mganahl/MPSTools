@@ -5,7 +5,5 @@ This is a C++ library for ground state optimization (DMRG), real time evolution 
 The code uses an MPO formalism to facilitate implementation of new models.
 
 Dependencies:
-Boost
-blas
-lapack
+boost, blas, lapack
 
